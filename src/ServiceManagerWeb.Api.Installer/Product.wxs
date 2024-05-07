@@ -1,0 +1,84 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+	 xmlns:iis="http://wixtoolset.org/schemas/v4/wxs/iis"
+	 xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+
+	<?define ProductVersion="!(bind.FileVersion.ServiceManagerUtilsApiDll)" ?>
+	<?define WebSource = "$(var.ServiceManagerWeb.Api.TargetDir)..\" ?>
+
+	<Package Name="Trading.ServiceManagerWeb" Language="1033" Version="$(var.ProductVersion)" Manufacturer="SEFE" UpgradeCode="d258b09c-8d75-47af-8c28-c410471466c4" InstallerVersion="200" ProductCode="{E0413151-9615-4A63-81F4-E7A2222DBB24}">
+
+
+		<Property Id="POWERSHELLEXE">
+			<RegistrySearch Id="POWERSHELLEXE" Type="raw" Root="HKLM" Key="SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell" Name="Path" />
+		</Property>
+		<Launch Condition="Installed OR POWERSHELLEXE" Message="This application requires Windows PowerShell." />
+
+		<PropertyRef Id="WIX_IS_NETFRAMEWORK_48_OR_LATER_INSTALLED" />
+		<Launch Condition="Installed OR WIX_IS_NETFRAMEWORK_48_OR_LATER_INSTALLED" Message="This application requires Microsoft .NET Framework 4.8 Runtime in order to run. Please install the .NET Framework and then run this installer again." />
+
+		<SetProperty Id="SetLoadUserProfile" Before="SetLoadUserProfile" Sequence="execute" Value="&quot;[POWERSHELLEXE]&quot; -Version 3.0 -NoProfile -NonInteractive -InputFormat None -ExecutionPolicy Bypass -File &quot;[#SETLOADUSERPROFILE.PS1]&quot;" />
+
+		<CustomAction Id="SetLoadUserProfile" DllEntry="WixQuietExec" Execute="deferred" Return="check" Impersonate="yes" BinaryRef="Wix4UtilCA_X86" />
+
+		<InstallExecuteSequence>
+			<Custom Action="SetLoadUserProfile" Before="InstallFinalize" Condition="NOT Installed" />
+			<Custom Action="ReconfigureLoadUserProfileSM" Before="InstallFinalize" Condition="NOT Installed" />
+		</InstallExecuteSequence>
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of Trading.ServiceManagerUtils is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+
+		<Feature Id="ProductFeature" Title="Trading.ServiceManagerUtils.Api" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+			<ComponentGroupRef Id="ServiceManagerUtilsApiComGroup" />
+			<ComponentGroupRef Id="SMWebComGroup" />
+			<ComponentRef Id="SetupIIS" />
+			<ComponentRef Id="SETLOADUSERPROFILE.PS1" />
+			<ComponentRef Id="SMWebIISComponent" />
+		</Feature>
+	</Package>
+
+	<Fragment>
+		<Component Id="SetupIIS" Guid="3CCDF47C-17B8-4791-AB43-FC2FE1571395" KeyPath="yes" Directory="INSTALLFOLDER" Bitness="always64">
+			<util:User Id="ServiceManagerUtilsApiAppPoolUser" Name="[APPPOOLUSERIDENTITY]" Password="[APPPOOLUSERPASSWORD]" CreateUser="no" RemoveOnUninstall="no" LogonAsService="yes" />
+			<iis:WebAppPool Id="ServiceManagerUtilsApiAppPool" Name="ServiceManagerUtilsApiAppPool" Identity="other" User="ServiceManagerUtilsApiAppPoolUser" RecycleMinutes="720" ManagedPipelineMode="integrated" ManagedRuntimeVersion="v4.0" />
+			<iis:WebVirtualDir Id="ServiceManagerUtilsApiVirtualDirectory" Alias="ServiceManagerUtils" Directory="INSTALLFOLDER" WebSite="ServiceManagerUtilsWebSite">
+				<iis:WebDirProperties Id="props" AnonymousAccess="no" WindowsAuthentication="yes" />
+				<iis:WebApplication Id="ServiceManagerUtilsApiApplication" Name="ServiceManagerUtilsApiVirtualDirectory" WebAppPool="ServiceManagerUtilsApiAppPool" />
+			</iis:WebVirtualDir>
+
+			<util:XmlFile Id="WebApiCors" Action="setValue" ElementPath="/configuration/appSettings/add[\[]@key='AllowedCORSLocations'[\]]/@value" File="[#WebConfig]" Value="[SMU.CORS]" />
+		</Component>
+	</Fragment>
+
+	<Fragment>
+		<StandardDirectory Id="ProgramFiles64Folder">
+			<Directory Id="Trading" Name="Trading">
+				<Directory Id="SMWebFolder" Name="SMWeb">
+					<Directory Id="SMWebHealthFolder" Name="health" />
+				</Directory>
+
+				<Directory Id="INSTALLFOLDER" Name="ServiceManager.Api">
+					<Component Id="SETLOADUSERPROFILE.PS1" Guid="{BFBA0A3E-FC9B-49D6-A0B2-13FC367D6170}" DiskId="1">
+						<File Id="SETLOADUSERPROFILE.PS1" Name="Set-LoadUserProfile.ps1" Source="Set-LoadUserProfile.ps1" />
+					</Component>
+					<Directory Id="bin" Name="bin">
+						<Directory Id="roslyn" Name="roslyn">
+						</Directory>
+					</Directory>
+					<Component Id="rootFolderComponent" Guid="ba202631-8b42-450a-adc7-78a74621335d" Bitness="always64">
+						<CreateFolder />
+						<util:XmlFile Id="WebConfigModifyServer" Action="setValue" File="[#WebConfig]" ElementPath="/configuration/appSettings/add[\[]@key='Server'[\]]/@value" Value="[SCSMSERVER]" />
+						<util:XmlFile Id="WebConfigModifyAccessGroup" Action="setValue" File="[#WebConfig]" ElementPath="/configuration/appSettings/add[\[]@key='AccessGroup'[\]]/@value" Value="[ACCESSGROUP]" />
+					</Component>
+				</Directory>
+			</Directory>
+		</StandardDirectory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<ComponentRef Id="rootFolderComponent" />
+		</ComponentGroup>
+	</Fragment>
+</Wix>

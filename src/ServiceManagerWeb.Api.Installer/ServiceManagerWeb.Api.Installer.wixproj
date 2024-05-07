@@ -1,0 +1,53 @@
+﻿<Project Sdk="WixToolset.Sdk/4.0.3">
+  <PropertyGroup>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <OutputName>ServiceManagerWeb.Installer</OutputName>
+    <Name>ServiceManagerWeb.Api.Installer</Name>
+    <SMWebUIDir>$(SolutionDir)service-manager-ui\dist</SMWebUIDir>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DefineConstants>SMWebUIDir=$(SMWebUIDir);Debug</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DefineConstants>SMWebUIDir=$(SMWebUIDir)</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Wix4JsonFileExtension" Version="4.0.0.24" />
+    <PackageReference Include="WixToolset.Heat" Version="4.0.3" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.3" />
+    <PackageReference Include="WixToolset.NetFx.wixext" Version="4.0.3" />
+    <PackageReference Include="WixToolset.Iis.wixext" Version="4.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="HeatTransform.xslt" />
+    <Content Include="Set-LoadUserProfile.ps1" />
+    <Content Include="WebUI\HeatTransform.xslt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ServiceManagerWeb.Api\ServiceManagerWeb.Api.csproj">
+      <Name>ServiceManagerWeb.Api</Name>
+      <Project>{6f0f16bf-cadb-41f6-aa07-5077dc39afbf}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <HarvestDirectory Include="$(SolutionDir)ServiceManagerWeb.Api">
+      <DirectoryRefId>INSTALLFOLDER</DirectoryRefId>
+      <ComponentGroupName>ServiceManagerUtilsApiComGroup</ComponentGroupName>
+      <Transforms>$(ProjectDir)HeatTransform.xslt</Transforms>
+      <PreprocessorVariable>var.ServiceManagerWeb.Api.ProjectDir</PreprocessorVariable>
+      <SuppressRootDirectory>true</SuppressRootDirectory>
+      <SuppressRegistry>true</SuppressRegistry>
+    </HarvestDirectory>
+    <HarvestDirectory Include="$(SMWebUIDir)">
+      <DirectoryRefId>SMWebFolder</DirectoryRefId>
+      <ComponentGroupName>SMWebComGroup</ComponentGroupName>
+      <Transforms>$(ProjectDir)WebUI\HeatTransform.xslt</Transforms>
+      <PreprocessorVariable>var.SMWebUIDir</PreprocessorVariable>
+      <SuppressRootDirectory>true</SuppressRootDirectory>
+    </HarvestDirectory>
+  </ItemGroup>
+</Project>

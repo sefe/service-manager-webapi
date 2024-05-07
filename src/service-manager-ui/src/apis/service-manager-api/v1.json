@@ -1,0 +1,413 @@
+{
+  "swagger": "2.0",
+  "info": { "version": "v1", "title": "Trading.ServiceManagerUtils.Api" },
+  "host": "localhost:60191",
+  "schemes": ["http"],
+  "paths": {
+    "/api/changes/riskquestions": {
+      "get": {
+        "tags": ["Changes"],
+        "operationId": "Changes_RiskQuestions",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "additionalProperties": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "/api/changes/impactquestions": {
+      "get": {
+        "tags": ["Changes"],
+        "operationId": "Changes_ImpactQuestions",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "additionalProperties": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "/api/changes/{id}": {
+      "get": {
+        "tags": ["Changes"],
+        "operationId": "Changes_Get",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/ChangeRequest" }
+          }
+        }
+      }
+    },
+    "/api/changes/myapprovals": {
+      "get": {
+        "tags": ["Changes"],
+        "operationId": "Changes_GetMyApprovals",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/ChangeRequest" }
+            }
+          }
+        }
+      }
+    },
+    "/api/changes/me": {
+      "get": {
+        "tags": ["Changes"],
+        "operationId": "Changes_GetMe",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "responses": {
+          "200": { "description": "OK", "schema": { "type": "string" } }
+        }
+      }
+    },
+    "/api/changes/new": {
+      "post": {
+        "tags": ["Changes"],
+        "operationId": "Changes_Post",
+        "consumes": ["application/json", "text/json"],
+        "produces": ["application/json", "text/json"],
+        "parameters": [
+          {
+            "name": "value",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/ChangeRequest" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK", "schema": { "type": "object" } }
+        }
+      }
+    },
+    "/api/changes/activitysucceeded": {
+      "put": {
+        "tags": ["Changes"],
+        "operationId": "Changes_PutActivitySucceeded",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "type": "string" },
+          {
+            "name": "activityName",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK", "schema": { "type": "object" } }
+        }
+      }
+    },
+    "/api/changes/activityfailed": {
+      "put": {
+        "tags": ["Changes"],
+        "operationId": "Changes_PutActivityFailed",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "type": "string" },
+          {
+            "name": "activityName",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK", "schema": { "type": "object" } }
+        }
+      }
+    },
+    "/api/changes/approvechange": {
+      "put": {
+        "tags": ["Changes"],
+        "operationId": "Changes_PutApproveChange",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "OK", "schema": { "type": "boolean" } }
+        }
+      }
+    },
+    "/api/changes/rejectchange": {
+      "put": {
+        "tags": ["Changes"],
+        "operationId": "Changes_PutRejectChange",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "OK", "schema": { "type": "boolean" } }
+        }
+      }
+    },
+    "/api/changes/clearapprovestatus": {
+      "put": {
+        "tags": ["Changes"],
+        "operationId": "Changes_PutClearApproveStatus",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "OK", "schema": { "type": "boolean" } }
+        }
+      }
+    },
+    "/api/incidents/{id}": {
+      "get": {
+        "tags": ["Incidents"],
+        "operationId": "Incidents_Get",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/IncidentRecord" }
+          }
+        }
+      }
+    },
+    "/api/incidents/new": {
+      "post": {
+        "tags": ["Incidents"],
+        "operationId": "Incidents_Post",
+        "consumes": ["application/json", "text/json"],
+        "produces": ["application/json", "text/json"],
+        "parameters": [
+          {
+            "name": "value",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/IncidentRecord" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK", "schema": { "type": "string" } }
+        }
+      }
+    },
+    "/api/requests/exists": {
+      "get": {
+        "tags": ["Requests"],
+        "operationId": "Requests_CheckExists",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "OK", "schema": { "type": "boolean" } }
+        }
+      }
+    },
+    "/api/requests/property": {
+      "get": {
+        "tags": ["Requests"],
+        "operationId": "Requests_PropertyValue",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "type": "string" },
+          {
+            "name": "propertyName",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK", "schema": { "type": "string" } }
+        }
+      }
+    },
+    "/api/requests/close": {
+      "put": {
+        "tags": ["Requests"],
+        "operationId": "Requests_Close",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "type": "string" }
+        ],
+        "responses": { "204": { "description": "No Content" } }
+      }
+    },
+    "/api/requests/isclosed": {
+      "get": {
+        "tags": ["Requests"],
+        "operationId": "Requests_IsClosed",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "OK", "schema": { "type": "boolean" } }
+        }
+      }
+    },
+    "/api/requests/comments": {
+      "get": {
+        "tags": ["Requests"],
+        "operationId": "Requests_Comments",
+        "consumes": [],
+        "produces": ["application/json", "text/json"],
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/SyncComment" }
+            }
+          }
+        }
+      }
+    },
+    "/api/requests/addcomment": {
+      "put": {
+        "tags": ["Requests"],
+        "operationId": "Requests_AddComment",
+        "consumes": ["application/json", "text/json"],
+        "produces": [],
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "type": "string" },
+          {
+            "name": "comment",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/SyncComment" }
+          }
+        ],
+        "responses": { "204": { "description": "No Content" } }
+      }
+    }
+  },
+  "definitions": {
+    "ChangeRequest": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "string" },
+        "Title": { "type": "string" },
+        "Description": { "type": "string" },
+        "Reason": { "type": "string" },
+        "Area": { "type": "string" },
+        "Priority": { "type": "string" },
+        "Impact": { "type": "string" },
+        "Risk": { "type": "string" },
+        "RiskAssessmentPlan": { "type": "string" },
+        "Notes": { "type": "string" },
+        "SupportGroup": { "type": "string" },
+        "ScheduledStartDate": { "format": "date-time", "type": "string" },
+        "ScheduledEndDate": { "format": "date-time", "type": "string" },
+        "ImplementationPlan": { "type": "string" },
+        "TestPlan": { "type": "string" },
+        "BackoutPlan": { "type": "string" },
+        "Status": { "type": "string" },
+        "CRStatus": { "type": "string" },
+        "ChangeLevel": { "type": "string" },
+        "Customer": { "type": "string" },
+        "Approvers": { "type": "array", "items": { "type": "string" } },
+        "ImpactQuestionResponses": { "$ref": "#/definitions/ImpactQuestions" },
+        "RiskQuestionResponses": { "$ref": "#/definitions/RiskQuestions" },
+        "TemplateName": { "type": "string" },
+        "InitialActivityToComplete": { "type": "string" },
+        "CreatedBy": { "type": "string" },
+        "ApprovalStatuses": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/ApprovalStatus" }
+        }
+      }
+    },
+    "ImpactQuestions": {
+      "type": "object",
+      "properties": {
+        "OutageOrRestrictedFunctionality": { "type": "boolean" },
+        "ServiceImpactedOnFailure": { "type": "boolean" },
+        "Criticality": { "type": "string" }
+      }
+    },
+    "RiskQuestions": {
+      "type": "object",
+      "properties": {
+        "Question1": { "type": "boolean" },
+        "Question2": { "type": "boolean" },
+        "Question3": { "type": "boolean" },
+        "Question4": { "type": "boolean" },
+        "Question5": { "type": "boolean" },
+        "Question6": { "type": "boolean" }
+      }
+    },
+    "ApprovalStatus": {
+      "type": "object",
+      "properties": {
+        "Approver": { "type": "string" },
+        "Status": { "type": "string" }
+      }
+    },
+    "IncidentRecord": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "string" },
+        "Title": { "type": "string" },
+        "Description": { "type": "string" },
+        "Urgency": { "type": "string" },
+        "Impact": { "type": "string" },
+        "Priority": { "format": "int32", "type": "integer" },
+        "AffectedUser": { "type": "string" },
+        "ClassificationCategory": { "type": "string" },
+        "SupportGroup": { "type": "string" }
+      }
+    },
+    "SyncComment": {
+      "type": "object",
+      "properties": {
+        "Title": { "type": "string" },
+        "EnteredDate": { "format": "date-time", "type": "string" },
+        "AuthorIdentity": { "type": "string" },
+        "Comment": { "type": "string" },
+        "CommentDataSource": {
+          "format": "int32",
+          "enum": [0, 1],
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

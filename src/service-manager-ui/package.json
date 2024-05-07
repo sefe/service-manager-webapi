@@ -1,0 +1,34 @@
+{
+  "name": "service-manager-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "api-gen": "openapi-generator-cli generate -g typescript-rxjs -i .\\src\\apis\\service-manager-api\\v1.json -o .\\src\\apis\\service-manager-api-gen\\ --additional-properties=supportsES6=true --skip-validate-spec"
+  },
+  "dependencies": {
+    "@vaadin/app-layout": "^24.3.11",
+    "@vaadin/grid": "^24.3.11",
+    "@vaadin/horizontal-layout": "^24.3.11",
+    "@vaadin/icon": "^24.3.11",
+    "@vaadin/icons": "^24.3.11",
+    "@vaadin/notification": "^24.3.11",
+    "@vaadin/router": "^1.7.5",
+    "@vaadin/tabs": "^24.3.11",
+    "@vaadin/vaadin-lumo-styles": "^24.3.11",
+    "@vaadin/vaadin-themable-mixin": "^24.3.11",
+    "@vaadin/vertical-layout": "^24.3.11",
+    "linkify-html": "^4.1.3",
+    "linkifyjs": "^4.1.3",
+    "lit": "^3.1.3",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "prettier": "3.2.5",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.9"
+  }
+}

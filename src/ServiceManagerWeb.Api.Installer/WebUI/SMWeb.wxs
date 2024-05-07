@@ -1,0 +1,32 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" 
+	 xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util" 
+	 xmlns:iis="http://wixtoolset.org/schemas/v4/wxs/iis" 
+	 xmlns:Json="http://schemas.hegsie.com/wix/JsonExtension">
+  <Fragment>
+
+    <CustomAction Id="ReconfigureLoadUserProfileSM" Directory="SMWebFolder" Execute="deferred" Impersonate="no" ExeCommand="[System64Folder]inetsrv\AppCmd.exe set apppool &quot;SMWeb&quot; -processmodel.loaduserprofile:true" Return="ignore" />
+
+    <Component Id="SMWebIISComponent" Guid="{520D6C74-73C2-4883-B562-6C56BA438C66}" Directory="SMWebFolder">
+      <util:User Id="SMWebServiceUser" Name="[APPPOOLUSERIDENTITY]" Password="[APPPOOLUSERPASSWORD]" CreateUser="no" RemoveOnUninstall="no" LogonAsService="yes" />
+      <iis:WebAppPool Id="SMWebAppPool" Name="SMWeb" Identity="other" User="SMWebServiceUser" RecycleMinutes="120" ManagedPipelineMode="integrated" ManagedRuntimeVersion="v4.0" />
+
+      <Json:JsonFile Id="AppSettings1" File="[#SMWebUIConfigJson]" ElementPath="$.api" Value="[SMAPI.ENDPOINT]" />
+
+      <iis:WebSite Id="ServiceManagerUtilsWebSite" Description="ServiceManagerUtilsWebSite" Directory="SMWebFolder" ConfigureIfExists="yes">
+        <iis:WebAddress Id="All80Unassigned" Port="80" />
+        <iis:WebApplication Id="WebSiteApplication" Name="ServiceManagerUtilsWebSite" WebAppPool="SMWebAppPool" />
+        <iis:WebVirtualDir Id="ServiceManagerVirtualDir" Alias="/" Directory="SMWebFolder">
+          <iis:MimeMap Id="MIME_JSON_P3" Extension=".json" Type="application/json" />
+          <iis:MimeMap Id="MIME_WEBMANIFEST" Extension=".webmanifest" Type="application/manifest+json" />
+          <iis:WebDirProperties Id="ServiceManagerProperties" WindowsAuthentication="yes" AnonymousAccess="no" />
+        </iis:WebVirtualDir>
+
+        <iis:WebVirtualDir Id="ServiceManagerHealthVirtualDir" Alias="health" Directory="SMWebHealthFolder">
+          <iis:WebDirProperties Id="ServiceManagerHealthProperties" WindowsAuthentication="no" AnonymousAccess="yes" />
+        </iis:WebVirtualDir>
+      </iis:WebSite>
+      <CreateFolder />
+    </Component>
+
+  </Fragment>
+</Wix>

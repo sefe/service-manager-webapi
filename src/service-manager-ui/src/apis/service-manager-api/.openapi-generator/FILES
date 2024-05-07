@@ -1,0 +1,16 @@
+.gitignore
+apis/ChangesApi.ts
+apis/IncidentsApi.ts
+apis/RequestsApi.ts
+apis/index.ts
+index.ts
+models/ApprovalStatus.ts
+models/ChangeRequest.ts
+models/ImpactQuestions.ts
+models/IncidentRecord.ts
+models/RiskQuestions.ts
+models/SyncComment.ts
+models/index.ts
+runtime.ts
+servers.ts
+tsconfig.json
