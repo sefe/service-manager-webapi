@@ -28,8 +28,9 @@ variables:
   minorVersion: '0'
   patchVersion: '0'
   version: '$(majorVersion).$(minorVersion).$(patchVersion)'
-  
-- task: VersionAssemblies@2
+
+steps:
+- task: colinsalmcorner.colinsalmcorner-buildtasks.version-assemblies-task.VersionAssemblies@2
   inputs:
     Path: '$(Build.SourcesDirectory)'
     VersionNumber: '$(Build.BuildNumber)'
@@ -75,7 +76,7 @@ variables:
     projectVersion: '$(Build.BuildNumber)'
   continueOnError: false
 
-- task: VersionAssemblies@2
+- task: richardfennellbm.BM-VSTS-Versioning-Task.Version-Assemblies-Task.VersionAssemblies@2
   inputs:
     Path: '$(Build.SourcesDirectory)'
     VersionNumber: '$(Build.BuildNumber)'
