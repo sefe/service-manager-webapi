@@ -20,9 +20,7 @@ pool:
 
 variables:
   BuildPlatform: 'Any CPU'
-  BuildConfiguration: 'Release'
-  dropFolder: '$(dropfolder)'
-  nugetConfigPath: '$(nugetConfigPath)'
+  BuildConfiguration: 'Release'  
   projectKey: 'sh-devops-service-manager-web'
   majorVersion: '21'
   minorVersion: '0'
