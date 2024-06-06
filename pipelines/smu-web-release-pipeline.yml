@@ -8,19 +8,13 @@ resources:
     source: service-manager-web-build
     trigger: true
 
-variables:
-  DropFolder: $(dropfolder)
-  baseurl: $(baseurl)
-  DV02EnvMachine: $(DV02EnvMachine)
-  PR02EnvMachine: $(PR02EnvMachine)
-
 stages:
   - stage: DeployServiceManagerUtilsDV01
     displayName: Deploy ServiceManagerUtils DV 02
     dependsOn: []
     variables:
       environmentName: 'ServiceManagerUtils DV 02'
-      machineName: $(DV01StageMachine)
+      machineName: $(DV02StageMachine)
 
     jobs:
     - deployment: 'Deploy_Artefacts'
