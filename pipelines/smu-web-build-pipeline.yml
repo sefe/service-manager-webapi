@@ -1,0 +1,125 @@
+name: $(BuildDefinitionName)_$(year:yy).$(Month).$(DayOfMonth)$(Rev:.r)
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+      - release/*
+      - feature/*
+      - hotfix/*
+  paths: 
+    include: 
+      - src
+
+pool:
+  name: 'BUILD-DOTNET-01'
+  demands:
+  - msbuild
+  - visualstudio
+
+variables:
+  BuildPlatform: 'Any CPU'
+  BuildConfiguration: 'Release'
+  dropFolder: '$(dropfolder)'
+  nugetConfigPath: '$(nugetConfigPath)'
+  projectKey: 'sh-devops-service-manager-web'
+  majorVersion: '21'
+  minorVersion: '0'
+  patchVersion: '0'
+  version: '$(majorVersion).$(minorVersion).$(patchVersion)'
+  
+- task: VersionAssemblies@2
+  inputs:
+    Path: '$(Build.SourcesDirectory)'
+    VersionNumber: '$(Build.BuildNumber)'
+    InjectVersion: False
+    FilenamePattern: 'AssemblyInfo.*'
+    OutputVersion: 'OutputedVersion'
+
+- task: Npm@1
+  displayName: 'install web dependencies'
+  inputs:
+    command: install
+    workingDir: 'src\service-manager-ui'
+    verbose: true
+
+- task: Npm@1
+  displayName: 'Build Web Site'
+  inputs:
+    command: custom
+    workingDir: 'src\service-manager-ui'
+    verbose: true
+    customCommand: 'run build'
+          
+- task: NuGetToolInstaller@1
+  displayName: 'Use NuGet 5.5.0'
+  inputs:
+    versionSpec: 5.5.x
+    checkLatest: true
+
+- task: NuGetCommand@2
+  displayName: 'NuGet restore'
+  inputs:
+    feedsToUse: config
+    nugetConfigPath: '$(nugetConfigPath)'
+    noCache: true
+
+- task: SonarQubePrepare@5
+  displayName: 'Prepare the SonarQube analysis'
+  inputs:
+    SonarQube: 'SonarQube'
+    scannerMode: 'MSBuild'
+    projectKey: '$(projectKey)'
+    projectName: '$(projectKey)'
+    projectVersion: '$(Build.BuildNumber)'
+  continueOnError: false
+
+- task: VersionAssemblies@2
+  inputs:
+    Path: '$(Build.SourcesDirectory)'
+    VersionNumber: '$(Build.BuildNumber)'
+    InjectVersion: False
+    FilenamePattern: 'AssemblyInfo.*'
+    OutputVersion: 'OutputedVersion'
+
+- task: VSBuild@1
+  inputs:
+    solution: '**\*.sln'
+    platform: '$(BuildPlatform)'
+    configuration: '$(BuildConfiguration)'
+    
+- task: SonarQubeAnalyze@5
+
+- task: SynopsysDetectTask@9
+  displayName: 'Run Synopsys Detect (BlackDuck)'
+  inputs:
+    Products: 'BD'
+    BlackDuckService: 'BlackDuck'
+    DetectVersion: 'latest'
+    DetectArguments: '--detect.project.name="$(projectKey)"
+           --detect.project.version.name="$(projectKey)-$(Build.SourceBranchName)"
+           --detect.source.path=$(Build.SourcesDirectory)
+           --detect.tools.excluded=SIGNATURE_SCAN
+           --detect.detector.search.depth=5
+           --detect.required.detector.types=NUGET;NPM'
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/develop')))
+  continueOnError: true
+  
+- task: CopyFiles@2
+  displayName: 'Copy MSI'
+  inputs:
+    Contents: |
+     **\*.msi
+     **\*.msi.json
+    TargetFolder: '$(Build.ArtifactStagingDirectory)\Server'
+    CleanTargetFolder: true
+    OverWrite: true
+    flattenFolders: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: Drop'
+  inputs:
+    ArtifactName: Drop
+    publishLocation: FilePath
+    TargetPath: '$(DropFolder)$(Build.DefinitionName)\$(Build.BuildNumber)'

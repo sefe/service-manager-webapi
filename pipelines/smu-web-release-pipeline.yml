@@ -1,0 +1,82 @@
+name: $(Build.DefinitionName).$(Build.SourceBranchName)_$(Date:yy).$(Date:MM).$(Date:dd)$(rev:.r)
+
+trigger: none
+
+resources:
+  pipelines:
+  - pipeline: servicemanagerwebbuild
+    source: service-manager-web-build
+    trigger: true
+
+variables:
+  DropFolder: $(dropfolder)
+  baseurl: $(baseurl)
+  DV02EnvMachine: $(DV02EnvMachine)
+  PR02EnvMachine: $(PR02EnvMachine)
+
+stages:
+  - stage: DeployServiceManagerUtilsDV01
+    displayName: Deploy ServiceManagerUtils DV 02
+    dependsOn: []
+    variables:
+      environmentName: 'ServiceManagerUtils DV 02'
+      machineName: $(DV01StageMachine)
+
+    jobs:
+    - deployment: 'Deploy_Artefacts'
+      condition: and(succeeded(), not(startsWith(variables['Build.SourceBranch'], 'refs/pull/')))
+      displayName: 'Deploy Artefacts'
+      pool:
+        name: BUILD-DOTNET-01
+
+      environment: 
+        name: ${{variables.environmentName}}
+
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            
+            - task: SEFE.dorc-release-task.custom-build-release-task.dorcrequest@2
+              displayName: 'Deploy ServiceManagerUtils (Web) : $(resources.pipeline.servicemanagerwebbuild.runName)'
+              inputs:
+                baseurl: '$(baseurl)'
+                project: 'ServiceManagerUtils'
+                targetenv: '$(environmentName)'
+                buildtext: '$(resources.pipeline.servicemanagerwebbuild.runName)'
+                buildnum: '$(resources.pipeline.servicemanagerwebbuild.runName)'
+                components: 'SMU2001 - Install Service Manager Utils'
+                pinned: false
+
+  - stage: DeployServiceManagerUtilsPR01
+    displayName: Deploy ServiceManagerUtils PR 02
+    dependsOn: []
+    variables:
+      environmentName: 'ServiceManagerUtils PR 02'
+      machineName: $(PR02EnvMachine)
+
+    jobs:
+    - deployment: 'Deploy_Artefacts'
+      condition: and(succeeded(), not(startsWith(variables['Build.SourceBranch'], 'refs/pull/')))
+      displayName: 'Deploy Artefacts'
+      pool:
+        name: BUILD-DOTNET-01
+
+      environment: 
+        name: ${{variables.environmentName}}
+
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            
+            - task: SEFE.dorc-release-task.custom-build-release-task.dorcrequest@2
+              displayName: 'Deploy ServiceManagerUtils (Web) : $(resources.pipeline.servicemanagerwebbuild.runName)'
+              inputs:
+                baseurl: '$(baseurl)'
+                project: 'ServiceManagerUtils'
+                targetenv: '$(environmentName)'
+                buildtext: '$(resources.pipeline.servicemanagerwebbuild.runName)'
+                buildnum: '$(resources.pipeline.servicemanagerwebbuild.runName)'
+                components: 'SMU2001 - Install Service Manager Utils'
+                pinned: false
