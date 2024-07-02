@@ -4,8 +4,8 @@ trigger: none
 
 resources:
   pipelines:
-  - pipeline: servicemanagerwebbuild
-    source: service-manager-web-build
+  - pipeline: service-manager-web-github-build
+    source: service-manager-web-github-build
     trigger: true
 
 stages:
