@@ -37,8 +37,8 @@ stages:
                 baseurl: '$(baseurl)'
                 project: 'ServiceManagerUtils'
                 targetenv: '$(environmentName)'
-                buildtext: '$(Build.BuildNumber)'
-                buildnum: '$(Build.BuildNumber)'
+                buildtext: '$(Build.SourceBranchName)'
+                buildnum: '$(Build.SourceBranchName)'
                 components: 'SMU2001 - Install Service Manager Utils'
                 pinned: false
 
