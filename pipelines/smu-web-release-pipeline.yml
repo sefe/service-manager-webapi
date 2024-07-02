@@ -32,13 +32,13 @@ stages:
             steps:
             
             - task: SEFE.dorc-release-task.custom-build-release-task.dorcrequest@2
-              displayName: 'Deploy ServiceManagerUtils (Web) : $(Release.Artifacts.NewBuild.BuildNumber)'
+              displayName: 'Deploy ServiceManagerUtils (Web) : $(Build.BuildNumber)'
               inputs:
                 baseurl: '$(baseurl)'
                 project: 'ServiceManagerUtils'
                 targetenv: '$(environmentName)'
-                buildtext: '$(Release.Artifacts.NewBuild.BuildNumber)'
-                buildnum: '$(Release.Artifacts.NewBuild.BuildNumber)'
+                buildtext: '$(Build.BuildNumber)'
+                buildnum: '$(Build.BuildNumber)'
                 components: 'SMU2001 - Install Service Manager Utils'
                 pinned: false
 
@@ -65,12 +65,12 @@ stages:
             steps:
             
             - task: SEFE.dorc-release-task.custom-build-release-task.dorcrequest@2
-              displayName: 'Deploy ServiceManagerUtils (Web) : $(Release.Artifacts.NewBuild.BuildNumber)'
+              displayName: 'Deploy ServiceManagerUtils (Web) : $(Build.BuildNumber)'
               inputs:
                 baseurl: '$(baseurl)'
                 project: 'ServiceManagerUtils'
                 targetenv: '$(environmentName)'
-                buildtext: '$(Release.Artifacts.NewBuild.BuildNumber)'
-                buildnum: '$(Release.Artifacts.NewBuild.BuildNumber)'
+                buildtext: '$(Build.BuildNumber)'
+                buildnum: '$(Build.BuildNumber)'
                 components: 'SMU2001 - Install Service Manager Utils'
                 pinned: false
