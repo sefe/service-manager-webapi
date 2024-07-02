@@ -37,8 +37,8 @@ stages:
                 baseurl: '$(baseurl)'
                 project: 'ServiceManagerUtils'
                 targetenv: '$(environmentName)'
-                buildtext: '$(Build.BuildNumber)'
-                buildnum: '$(Build.BuildNumber)'
+                buildtext: '$(resources.pipeline.service-manager-web-github-build.runName)'
+                buildnum: '$(resources.pipeline.service-manager-web-github-build.runName)'
                 components: 'SMU2001 - Install Service Manager Utils'
                 pinned: false
 
@@ -70,7 +70,7 @@ stages:
                 baseurl: '$(baseurl)'
                 project: 'ServiceManagerUtils'
                 targetenv: '$(environmentName)'
-                buildtext: '$(Build.BuildNumber)'
-                buildnum: '$(Build.BuildNumber)'
+                buildtext: '$(resources.pipeline.service-manager-web-github-build.runName)'
+                buildnum: '$(resources.pipeline.service-manager-web-github-build.runName)'
                 components: 'SMU2001 - Install Service Manager Utils'
                 pinned: false
