@@ -27,6 +27,7 @@ namespace ServiceManagerWeb.Core.Builders
         public const string ImpactEnum = "Impact";
         public const string IncidentClassificationEnum = "Incident Classification";
         public const string IncidentTierQueueEnum = "Incident Tier Queue";
+        public const string IncidentStatusEnum = "Incident Status";
 
         private static Version Version = new Version("7.5.1464.0");
 
@@ -49,7 +50,8 @@ namespace ServiceManagerWeb.Core.Builders
                 ImpactEnum,
                 UrgencyEnum,
                 IncidentClassificationEnum,
-                IncidentTierQueueEnum
+                IncidentTierQueueEnum,
+                IncidentStatusEnum
             };
             var allEnums = ManagementGroup.EntityTypes.GetEnumerations();
 
@@ -97,6 +99,8 @@ namespace ServiceManagerWeb.Core.Builders
             Assert(() => input.Priority == null, "Priority must not be specified.");
             Assert(() => !string.IsNullOrEmpty(input.AffectedUser), "Affected User must be specified.");
             Assert(() => IsValidUser(input.AffectedUser), "The Affected User specified is not valid.");
+            Assert(() => !string.IsNullOrEmpty(input.Status), "Status must be specified.");
+            Assert(() => IsValidEnumerationValue(IncidentStatusEnum, input.Status), "The Status specified is not valid.");
         }
 
         public IncidentRecord AsIncidentRecord(EnterpriseManagementObject input)
@@ -112,7 +116,8 @@ namespace ServiceManagerWeb.Core.Builders
                 Urgency = GetEnumValue(properties, UrgencyPropName),
                 Impact = GetEnumValue(properties, ImpactPropName),
                 SupportGroup = GetEnumValue(properties, TierQueuePropName),
-                ClassificationCategory = GetEnumValue(properties, ClassificationPropName)
+                ClassificationCategory = GetEnumValue(properties, ClassificationPropName),
+                Status = GetEnumValue(properties, StatusPropName)
             };
 
 
@@ -130,7 +135,8 @@ namespace ServiceManagerWeb.Core.Builders
                 .SetProperty(UrgencyPropName, UrgencyEnum, value.Urgency)
                 .SetProperty(TierQueuePropName, IncidentTierQueueEnum, value.SupportGroup)
                 .SetProperty(TitlePropName, value.Title)
-                .SetProperty(DescriptionPropName, value.Description).WorkItem;
+                .SetProperty(DescriptionPropName, value.Description)
+                .SetProperty(StatusPropName, IncidentStatusEnum, value.Status).WorkItem;
 
             incidentRecord.Commit();
 
