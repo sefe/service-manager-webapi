@@ -25,6 +25,18 @@
     {
       "MSIParameter": "SMU.CORS",
       "DeployProperty": "SMU_CORS"
+    },
+    {
+      "MSIParameter": "OAUTHTENANTID",
+      "DeployProperty": "SMU_OAUTHTENANTID"
+    },
+    {
+      "MSIParameter": "OAUTHCLIENTAPPID",
+      "DeployProperty": "SMU_OAUTHCLIENTAPPID"
+    },
+    {
+      "MSIParameter": "INCIDENTSOPERATOR",
+      "DeployProperty": "SMU_INCIDENTSOPERATOR"
     }
   ]
 }
