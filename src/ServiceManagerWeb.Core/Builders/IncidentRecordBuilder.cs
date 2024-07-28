@@ -159,7 +159,7 @@ namespace ServiceManagerWeb.Core.Builders
                 return reader.Where(_ => !searchRequest.Statuses.Any() || searchRequest.Statuses.Contains(GetEnumValue(_.Values, StatusPropName)))
                     .Select(AsIncidentRecord);
             }
-            return null;
+            return Array.Empty<IncidentRecord>();
         }
 
         private void FillStatusEnumValues()
