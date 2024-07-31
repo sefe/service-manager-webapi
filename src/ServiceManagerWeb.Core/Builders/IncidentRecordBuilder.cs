@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EnterpriseManagement;
@@ -156,8 +156,10 @@ namespace ServiceManagerWeb.Core.Builders
             var reader = ManagementGroup.EntityObjects.GetObjectReader<EnterpriseManagementObject>(cr, ObjectQueryOptions.Default);
             if (reader != null && reader.Count > 0)
             {
-                return reader.Where(_ => !searchRequest.Statuses.Any() || searchRequest.Statuses.Contains(GetEnumValue(_.Values, StatusPropName)))
+                var items = reader
+                     .Where(_ => ((string)_.Values.First(prop => prop.Type.Name == "Title").Value).IndexOf(searchRequest.Title, StringComparison.OrdinalIgnoreCase) >= 0)
                     .Select(AsIncidentRecord);
+                return items;
             }
             return Array.Empty<IncidentRecord>();
         }
@@ -177,19 +179,26 @@ namespace ServiceManagerWeb.Core.Builders
                 $"{nameof(IncidentSearchRequest.Title)} filter is missing.");
             Assert(() => searchParams.CreatedAfter.HasValue,
                 $"{nameof(IncidentSearchRequest.CreatedAfter)} filter is missing.");
-            Assert(() => searchParams.CreatedAfter.Value < DateTime.UtcNow,
+            Assert(() => searchParams.CreatedAfter?.DateTime < DateTimeOffset.UtcNow,
                 $"{nameof(IncidentSearchRequest.CreatedAfter)} cannot be in the future");
             Assert(() => searchParams.Statuses.All(_ => Statuses.Contains(_)), $"Invalid {nameof(IncidentSearchRequest.Statuses)} specified. Valid values are: {string.Join(",", Statuses)}");
         }
 
-        private static string BuildIncidentSearchCondition(IncidentSearchRequest searchParams)
+        private string BuildIncidentSearchCondition(IncidentSearchRequest searchRequest)
         {
             var conditions = new List<string>();
-            if (!string.IsNullOrWhiteSpace(searchParams.Title))
-                conditions.Add($"Title Like '%{searchParams.Title}%'");
 
-            if (searchParams.CreatedAfter.HasValue)
-                conditions.Add($"CreatedDate > '{searchParams.CreatedAfter.Value:M/d/yyyy HH:mm:ss}'");
+            if (searchRequest.CreatedAfter.HasValue)
+                conditions.Add($"CreatedDate > '{searchRequest.CreatedAfter.Value:M/d/yyyy HH:mm:ss K}'");
+
+            if (searchRequest.Statuses.Count > 0)
+            {
+                var statusIds = EnumTree.First(_ => _.Name == IncidentStatusEnum)
+                    .Children
+                    .Where(_ => searchRequest.Statuses.Contains(_.Name))
+                    .Select(_ => _.Id);
+                conditions.Add($"({string.Join(" OR ", statusIds.Select(_ => $"Status = '{_}'"))})");
+            }
 
             return string.Join(" AND ", conditions);
         }
