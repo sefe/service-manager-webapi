@@ -32,13 +32,13 @@ stages:
             steps:
             
             - task: SEFE.dorc-release-task.custom-build-release-task.dorcrequest@2
-              displayName: 'Deploy ServiceManagerUtils (Web) : $(resources.pipeline.servicemanagerwebbuild.runName)'
+              displayName: 'Deploy ServiceManagerUtils (Web) : $(Build.BuildNumber)'
               inputs:
                 baseurl: '$(baseurl)'
                 project: 'ServiceManagerUtils'
                 targetenv: '$(environmentName)'
-                buildtext: '$(resources.pipeline.servicemanagerwebbuild.runName)'
-                buildnum: '$(resources.pipeline.servicemanagerwebbuild.runName)'
+                buildtext: '$(resources.pipeline.service-manager-web-github-build.runName)'
+                buildnum: '$(resources.pipeline.service-manager-web-github-build.runName)'
                 components: 'SMU2001 - Install Service Manager Utils'
                 pinned: false
 
@@ -65,12 +65,12 @@ stages:
             steps:
             
             - task: SEFE.dorc-release-task.custom-build-release-task.dorcrequest@2
-              displayName: 'Deploy ServiceManagerUtils (Web) : $(resources.pipeline.servicemanagerwebbuild.runName)'
+              displayName: 'Deploy ServiceManagerUtils (Web) : $(Build.BuildNumber)'
               inputs:
                 baseurl: '$(baseurl)'
                 project: 'ServiceManagerUtils'
                 targetenv: '$(environmentName)'
-                buildtext: '$(resources.pipeline.servicemanagerwebbuild.runName)'
-                buildnum: '$(resources.pipeline.servicemanagerwebbuild.runName)'
+                buildtext: '$(resources.pipeline.service-manager-web-github-build.runName)'
+                buildnum: '$(resources.pipeline.service-manager-web-github-build.runName)'
                 components: 'SMU2001 - Install Service Manager Utils'
                 pinned: false

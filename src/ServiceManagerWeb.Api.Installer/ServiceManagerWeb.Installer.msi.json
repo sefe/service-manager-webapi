@@ -1,0 +1,30 @@
+{
+  "ProductNames": [],
+  "ServerType": "ServiceManagerUtils",
+  "Parameters": [
+    {
+      "MSIParameter": "SCSMSERVER",
+      "DeployProperty": "SMU_SCSMSERVER"
+    },
+    {
+      "MSIParameter": "ACCESSGROUP",
+      "DeployProperty": "SMU_ACCESSGROUP"
+    },
+    {
+      "MSIParameter": "APPPOOLUSERIDENTITY",
+      "DeployProperty": "SMU_APPPOOLUSERIDENTITY"
+    },
+    {
+      "MSIParameter": "APPPOOLUSERPASSWORD",
+      "DeployProperty": "SMU_APPPOOLUSERPASSWORD"
+    },
+    {
+      "MSIParameter": "SMAPI.ENDPOINT",
+      "DeployProperty": "SERVICEMANAGER_API_ENDPOINT"
+    },
+    {
+      "MSIParameter": "SMU.CORS",
+      "DeployProperty": "SMU_CORS"
+    }
+  ]
+}
