@@ -6,7 +6,7 @@ resources:
   pipelines:
   - pipeline: service-manager-web-github-build
     source: service-manager-web-github-build
-    trigger: true
+    trigger: none
 
 stages:
   - stage: DeployServiceManagerUtilsDV01
