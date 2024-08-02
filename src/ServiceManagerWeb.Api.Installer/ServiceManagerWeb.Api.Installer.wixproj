@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="HeatTransform.xslt" />
+    <Content Include="ServiceManagerWeb.Installer.msi.json" />
     <Content Include="Set-LoadUserProfile.ps1" />
     <Content Include="WebUI\HeatTransform.xslt" />
   </ItemGroup>
