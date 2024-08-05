@@ -12,16 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ServiceManagerWeb.Core
 {
     public class IncidentSearchRequest
     {
+        /// <summary>
+        /// String contained in a title using case-insensitive search
+        /// </summary>
         public string Title { get; set; }
-        public DateTimeOffset? CreatedAfter { get; set; }
-        public List<string> Statuses { get; set; } = new List<string>();
 
+        /// <summary>
+        /// Date after which incident is created. Value should contain timezone offset (i.e. +00:00 or Z for UTC) otherwise local server timezone is assumed.
+        /// </summary>
+        public DateTimeOffset? CreatedAfter { get; set; }
+
+        /// <summary>
+        /// Statuses of incidents to retrieve
+        /// </summary>
+        public List<string> Statuses { get; set; } = new List<string>();
     }
 }

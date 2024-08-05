@@ -193,7 +193,7 @@ namespace ServiceManagerWeb.Core.Builders
         {
             if (properties.ContainsKey(name))
             {
-                return (T)properties[name];
+                return properties[name] == null ? default : (T)properties[name];
             }
 
             return default(T);

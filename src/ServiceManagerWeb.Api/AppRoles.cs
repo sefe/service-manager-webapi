@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-﻿namespace ServiceManagerWeb.Api
+using System.Configuration;
+
+namespace ServiceManagerWeb.Api
 {
     public static class AppRoles
     {
-        public static string CloudIncidentsOperator => "servicemanagerutils-cloudIncidentsOperator";
+        public static string CloudIncidentsOperator => ConfigurationManager.AppSettings["CloudIncidentOperatorRole"];
     }
 }

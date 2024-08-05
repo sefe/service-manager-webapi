@@ -25,5 +25,6 @@
         public string AffectedUser { get; set; }
         public string ClassificationCategory { get; set; }
         public string SupportGroup { get; set; }
+        public string Status { get; set; }
     }
 }

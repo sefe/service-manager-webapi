@@ -70,6 +70,9 @@
 						<CreateFolder />
 						<util:XmlFile Id="WebConfigModifyServer" Action="setValue" File="[#WebConfig]" ElementPath="/configuration/appSettings/add[\[]@key='Server'[\]]/@value" Value="[SCSMSERVER]" />
 						<util:XmlFile Id="WebConfigModifyAccessGroup" Action="setValue" File="[#WebConfig]" ElementPath="/configuration/appSettings/add[\[]@key='AccessGroup'[\]]/@value" Value="[ACCESSGROUP]" />
+						<util:XmlFile Id="WebConfigModifyOauthTenantId" Action="setValue" File="[#WebConfig]" ElementPath="/configuration/appSettings/add[\[]@key='OAuth/TenantId'[\]]/@value" Value="[OAUTHTENANTID]" />
+						<util:XmlFile Id="WebConfigModifyOauthClientAppId" Action="setValue" File="[#WebConfig]" ElementPath="/configuration/appSettings/add[\[]@key='OAuth/ClientAppId'[\]]/@value" Value="[OAUTHCLIENTAPPID]" />
+						<util:XmlFile Id="WebConfigModifyCloudIncidentOperatorRole" Action="setValue" File="[#WebConfig]" ElementPath="/configuration/appSettings/add[\[]@key='CloudIncidentOperatorRole'[\]]/@value" Value="[INCIDENTSOPERATOR]" />
 					</Component>
 				</Directory>
 			</Directory>
