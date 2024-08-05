@@ -201,7 +201,7 @@ namespace ServiceManagerWeb.Core.Builders
                         switch (managementPackProperty.Name)
                         {
                             case "DecisionDate":
-                                relationship.SourceObject[managementPackProperty].Value = DateTime.Now;
+                                relationship.SourceObject[managementPackProperty].Value = DateTime.UtcNow;
                                 break;
                             case "Decision":
                                 {
