@@ -34,7 +34,7 @@ stages:
             - task: SEFE.dorc-release-task.custom-build-release-task.dorcrequest@2
               displayName: 'Deploy ServiceManagerUtils (Web) : $(Build.BuildNumber)'
               inputs:
-                baseurl: '$(baseurl)'
+                baseurl: 'http://deploymentportal:8080/'
                 project: 'ServiceManagerUtils'
                 targetenv: '$(environmentName)'
                 buildtext: '$(resources.pipeline.service-manager-web-github-build.runName)'
@@ -67,7 +67,7 @@ stages:
             - task: SEFE.dorc-release-task.custom-build-release-task.dorcrequest@2
               displayName: 'Deploy ServiceManagerUtils (Web) : $(Build.BuildNumber)'
               inputs:
-                baseurl: '$(baseurl)'
+                baseurl: 'http://deploymentportal:8080/'
                 project: 'ServiceManagerUtils'
                 targetenv: '$(environmentName)'
                 buildtext: '$(resources.pipeline.service-manager-web-github-build.runName)'
