@@ -8,6 +8,10 @@ resources:
     source: service-manager-web-github-build
     trigger: none
 
+variables:
+  # contains baseurl variable
+  - group: "DORC access"
+
 stages:
   - stage: DeployServiceManagerUtilsDV01
     displayName: Deploy ServiceManagerUtils DV 02
