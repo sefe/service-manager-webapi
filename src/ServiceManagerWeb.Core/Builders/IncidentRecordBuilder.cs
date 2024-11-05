@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EnterpriseManagement;
@@ -27,6 +27,7 @@ namespace ServiceManagerWeb.Core.Builders
         public const string ImpactEnum = "Impact";
         public const string IncidentClassificationEnum = "Incident Classification";
         public const string IncidentTierQueueEnum = "Incident Tier Queue";
+        public const string IncidentStatusEnum = "Incident Status";
 
         private static Version Version = new Version("7.5.1464.0");
 
@@ -49,7 +50,8 @@ namespace ServiceManagerWeb.Core.Builders
                 ImpactEnum,
                 UrgencyEnum,
                 IncidentClassificationEnum,
-                IncidentTierQueueEnum
+                IncidentTierQueueEnum,
+                IncidentStatusEnum
             };
             var allEnums = ManagementGroup.EntityTypes.GetEnumerations();
 
@@ -97,6 +99,8 @@ namespace ServiceManagerWeb.Core.Builders
             Assert(() => input.Priority == null, "Priority must not be specified.");
             Assert(() => !string.IsNullOrEmpty(input.AffectedUser), "Affected User must be specified.");
             Assert(() => IsValidUser(input.AffectedUser), "The Affected User specified is not valid.");
+            Assert(() => !string.IsNullOrEmpty(input.Status), "Status must be specified.");
+            Assert(() => IsValidEnumerationValue(IncidentStatusEnum, input.Status), "The Status specified is not valid.");
         }
 
         public IncidentRecord AsIncidentRecord(EnterpriseManagementObject input)
@@ -112,7 +116,8 @@ namespace ServiceManagerWeb.Core.Builders
                 Urgency = GetEnumValue(properties, UrgencyPropName),
                 Impact = GetEnumValue(properties, ImpactPropName),
                 SupportGroup = GetEnumValue(properties, TierQueuePropName),
-                ClassificationCategory = GetEnumValue(properties, ClassificationPropName)
+                ClassificationCategory = GetEnumValue(properties, ClassificationPropName),
+                Status = GetEnumValue(properties, StatusPropName)
             };
 
 
@@ -130,7 +135,8 @@ namespace ServiceManagerWeb.Core.Builders
                 .SetProperty(UrgencyPropName, UrgencyEnum, value.Urgency)
                 .SetProperty(TierQueuePropName, IncidentTierQueueEnum, value.SupportGroup)
                 .SetProperty(TitlePropName, value.Title)
-                .SetProperty(DescriptionPropName, value.Description).WorkItem;
+                .SetProperty(DescriptionPropName, value.Description)
+                .SetProperty(StatusPropName, IncidentStatusEnum, value.Status).WorkItem;
 
             incidentRecord.Commit();
 
@@ -150,10 +156,12 @@ namespace ServiceManagerWeb.Core.Builders
             var reader = ManagementGroup.EntityObjects.GetObjectReader<EnterpriseManagementObject>(cr, ObjectQueryOptions.Default);
             if (reader != null && reader.Count > 0)
             {
-                return reader.Where(_ => !searchRequest.Statuses.Any() || searchRequest.Statuses.Contains(GetEnumValue(_.Values, StatusPropName)))
+                var items = reader
+                     .Where(_ => ((string)_.Values.First(prop => prop.Type.Name == "Title").Value).IndexOf(searchRequest.Title, StringComparison.OrdinalIgnoreCase) >= 0)
                     .Select(AsIncidentRecord);
+                return items;
             }
-            return null;
+            return Array.Empty<IncidentRecord>();
         }
 
         private void FillStatusEnumValues()
@@ -171,19 +179,26 @@ namespace ServiceManagerWeb.Core.Builders
                 $"{nameof(IncidentSearchRequest.Title)} filter is missing.");
             Assert(() => searchParams.CreatedAfter.HasValue,
                 $"{nameof(IncidentSearchRequest.CreatedAfter)} filter is missing.");
-            Assert(() => searchParams.CreatedAfter.Value < DateTime.UtcNow,
+            Assert(() => searchParams.CreatedAfter?.DateTime < DateTimeOffset.UtcNow,
                 $"{nameof(IncidentSearchRequest.CreatedAfter)} cannot be in the future");
             Assert(() => searchParams.Statuses.All(_ => Statuses.Contains(_)), $"Invalid {nameof(IncidentSearchRequest.Statuses)} specified. Valid values are: {string.Join(",", Statuses)}");
         }
 
-        private static string BuildIncidentSearchCondition(IncidentSearchRequest searchParams)
+        private string BuildIncidentSearchCondition(IncidentSearchRequest searchRequest)
         {
             var conditions = new List<string>();
-            if (!string.IsNullOrWhiteSpace(searchParams.Title))
-                conditions.Add($"Title Like '%{searchParams.Title}%'");
 
-            if (searchParams.CreatedAfter.HasValue)
-                conditions.Add($"CreatedDate > '{searchParams.CreatedAfter.Value:M/d/yyyy HH:mm:ss}'");
+            if (searchRequest.CreatedAfter.HasValue)
+                conditions.Add($"CreatedDate > '{searchRequest.CreatedAfter.Value:M/d/yyyy HH:mm:ss K}'");
+
+            if (searchRequest.Statuses.Count > 0)
+            {
+                var statusIds = EnumTree.First(_ => _.Name == IncidentStatusEnum)
+                    .Children
+                    .Where(_ => searchRequest.Statuses.Contains(_.Name))
+                    .Select(_ => _.Id);
+                conditions.Add($"({string.Join(" OR ", statusIds.Select(_ => $"Status = '{_}'"))})");
+            }
 
             return string.Join(" AND ", conditions);
         }
