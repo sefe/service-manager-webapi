@@ -157,7 +157,9 @@ namespace ServiceManagerWeb.Core.Builders
             if (reader != null && reader.Count > 0)
             {
                 var items = reader
-                     .Where(_ => ((string)_.Values.First(prop => prop.Type.Name == "Title").Value).IndexOf(searchRequest.Title, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(item =>
+                        ((string)item.Values.FirstOrDefault(prop => prop.Type.Name == "Title")?.Value ?? "")
+                        .IndexOf(searchRequest.Title, StringComparison.OrdinalIgnoreCase) >= 0)
                     .Select(AsIncidentRecord);
                 return items;
             }

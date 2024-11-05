@@ -26,6 +26,7 @@ namespace ServiceManagerWeb.Core
 
         /// <summary>
         /// Date after which incident is created. Value should contain timezone offset (i.e. +00:00 or Z for UTC) otherwise local server timezone is assumed.
+        /// Avoid using big periods as it may result in a timeout and big load on the server.
         /// </summary>
         public DateTimeOffset? CreatedAfter { get; set; }
 
